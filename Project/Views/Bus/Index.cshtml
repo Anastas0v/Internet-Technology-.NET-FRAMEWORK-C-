@@ -1,0 +1,128 @@
+﻿@model IEnumerable<Project.Models.BusStation>
+@using Microsoft.AspNet.Identity
+
+@{
+    ViewBag.Title = "Index";
+}
+@if (Request.IsAuthenticated)
+{
+    <h5><b style="font-size:15px;">Logged In As</b> <b><i><u style="color:darkslategray">@User.Identity.GetUserName()</u></i></b></h5>
+}
+else
+{
+    <h5><b style="font-size:15px;">You Are </b> <b><i><u style="color:darkslategray">Not Logged IN.</u></i></b></h5>
+}
+
+
+<hr />
+<table class="table" id="myTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SCity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SCountry)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ECity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ECountry)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Departure)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Arrival)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Seat)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SCity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SCountry)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ECity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ECountry)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Departure)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Arrival)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Seat)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @if (User.IsInRole("Administrator") || User.IsInRole("Editor"))
+                    {
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-primary" })
+                    }
+                    @if (User.IsInRole("Administrator"))
+                    {
+                        <button data-route-id="@item.Id"  style="width:20px; text-align:left;" class="btn btn-danger js-delete">X</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            var table = $("#myTable").DataTable();
+            $("#myTable .js-delete").on("click", function () {
+                var button = $(this);
+                bootbox.confirm("Do You Want To Delete This Route?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/Bus/Delete/" + button.attr("data-route-id"),
+                            method: "GET",
+                            success: function () {
+                                table.row(button.parents("tr")).remove().draw();
+                            },
+                            error: function (error) {
+                                console.log(error)
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

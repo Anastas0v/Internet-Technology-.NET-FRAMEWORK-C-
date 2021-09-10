@@ -1,0 +1,27 @@
+﻿@model Project.Models.AddToRoleModel
+@using Microsoft.AspNet.Identity
+
+@{
+    ViewBag.Title = "YourRole";
+}
+
+@if (Request.IsAuthenticated)
+{
+    <h5><b style="font-size:15px;">Hello </b> <b><i><u style="color:darkslategray">@User.Identity.GetUserName()</u></i></b></h5>
+    if (User.IsInRole("Administrator"))
+    {
+        <h5><b style="font-size:15px;">Your Role Is: </b> <b><i><u style="color:darkslategray"> ADMINISTRATOR </u></i></b></h5>
+    }
+    else if (User.IsInRole("Editor"))
+    {
+        <h5><b style="font-size:15px;">Your Role Is: </b> <b><i><u style="color:darkslategray"> EDITOR </u></i></b></h5>
+    }
+    else
+    {
+        <h5><b style="font-size:15px;">Your Role Is: </b> <b><i><u style="color:darkslategray"> USER </u></i></b></h5>
+    }
+}
+else
+{
+    <h5><b style="font-size:15px;">You Are </b> <b><i><u style="color:darkslategray">Not Logged IN.</u></i></b></h5>
+}
